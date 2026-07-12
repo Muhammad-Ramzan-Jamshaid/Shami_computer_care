@@ -39,63 +39,15 @@
                     <a href="{{ url('/') }}" class="nav-link {{ Request::is('/') ? 'active' : '' }}">Home</a>
                 </li>
                 
-                <!-- Laptops Dropdown -->
                 <li class="nav-item">
-                    <span class="nav-link">Laptops <i class="fa-solid fa-chevron-down"></i></span>
-                    <div class="dropdown-menu">
-                        <a href="{{ url('/#laptops') }}" class="dropdown-link"><i class="fa-solid fa-laptop"></i> Dell Laptops</a>
-                        <a href="{{ url('/#laptops') }}" class="dropdown-link"><i class="fa-solid fa-laptop"></i> HP Laptops</a>
-                        <a href="{{ url('/#laptops') }}" class="dropdown-link"><i class="fa-solid fa-laptop"></i> Lenovo Laptops</a>
-                        <a href="{{ url('/#laptops') }}" class="dropdown-link"><i class="fa-solid fa-laptop"></i> ASUS Laptops</a>
-                        <a href="{{ url('/#laptops') }}" class="dropdown-link"><i class="fa-solid fa-laptop-code"></i> Apple MacBooks</a>
-                    </div>
+                    <a href="{{ url('/shop') }}" class="nav-link {{ Request::is('shop*') ? 'active' : '' }}">Shop</a>
                 </li>
 
-                <!-- Accessories Mega Dropdown (Grouped Wires, USBs, Peripherals) -->
+                @if(session()->has('admin_logged_in'))
                 <li class="nav-item">
-                    <span class="nav-link">Accessories <i class="fa-solid fa-chevron-down"></i></span>
-                    <div class="dropdown-menu accessories-megamenu">
-                        <!-- Wires & Cables Section -->
-                        <div class="megamenu-column">
-                            <h4 class="megamenu-section-title">Wires & Cables</h4>
-                            <ul>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-cable-car"></i> HDMI Cables</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-ethernet"></i> Ethernet Cables</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-plug"></i> Power Cables</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-circle"></i> VGA Cables</a></li>
-                            </ul>
-                        </div>
-                        
-                        <!-- USBs & Storage Section -->
-                        <div class="megamenu-column">
-                            <h4 class="megamenu-section-title">USB & Storage</h4>
-                            <ul>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-hard-drive"></i> Kingston Flash</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-hard-drive"></i> SanDisk USB</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-hard-drive"></i> Samsung Storage</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-hard-drive"></i> HP Flash Drives</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Speakers & Audio Peripherals Section -->
-                        <div class="megamenu-column">
-                            <h4 class="megamenu-section-title">Audio & Sound</h4>
-                            <ul>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-volume-high"></i> Stereo Speakers</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-headphones"></i> Soundbars</a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Core Peripherals Section -->
-                        <div class="megamenu-column">
-                            <h4 class="megamenu-section-title">Keyboards & Mouse</h4>
-                            <ul>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-keyboard"></i> Keyboards</a></li>
-                                <li><a href="{{ url('/#accessories') }}" class="dropdown-link"><i class="fa-solid fa-mouse"></i> Optical Mice</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <a href="{{ url('/admin/dashboard') }}" class="nav-link {{ Request::is('admin*') ? 'active' : '' }}" style="color: var(--primary-color); font-weight: 700;"><i class="fa-solid fa-user-gear"></i> Admin</a>
                 </li>
+                @endif
 
                 <li class="nav-item">
                     <a href="{{ url('/blog') }}" class="nav-link {{ Request::is('blog') ? 'active' : '' }}">Blog</a>
@@ -151,11 +103,12 @@
             <div class="footer-col">
                 <h4>Our Services</h4>
                 <ul class="footer-links">
-                    <li><a href="{{ url('/#services') }}">CCTV Camera Installation</a></li>
-                    <li><a href="{{ url('/#services') }}">Building Network Setup</a></li>
-                    <li><a href="{{ url('/#services') }}">Government Contracting</a></li>
-                    <li><a href="{{ url('/#services') }}">IT Infrastructure Design</a></li>
-                    <li><a href="{{ url('/#services') }}">Security Maintenance</a></li>
+                    <li><a href="{{ url('/contact?service=cctv') }}">CCTV Camera Installation</a></li>
+                    <li><a href="{{ url('/contact?service=sales') }}">Sell & Buy Devices</a></li>
+                    <li><a href="{{ url('/contact?service=repair') }}">Device Repair Service</a></li>
+                    <li><a href="{{ url('/contact?service=software') }}">Windows & Software Setup</a></li>
+                    <li><a href="{{ url('/contact?service=wifi') }}">Wi-Fi Modem Configurations</a></li>
+                    <li><a href="{{ url('/contact?service=accessories') }}">Computer Accessories</a></li>
                 </ul>
             </div>
 

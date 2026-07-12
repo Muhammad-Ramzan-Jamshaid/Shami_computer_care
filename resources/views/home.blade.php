@@ -286,7 +286,7 @@
     <section class="why-choose-us section-padding">
         <div class="container grid grid-2">
             <div>
-                <span class="badge" style="background-color: rgba(14, 165, 233, 0.15); color: var(--primary-color);">Why Choose Shami</span>
+                <span class="badge">Why Choose Shami</span>
                 <h2>Dedicated to Quality IT hardware and Dependable Integrations</h2>
                 <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 30px;">For over a decade, we have partnered with building operators, retail buyers, and government departments to install and supply the best technology. We ensure professional accountability on every single project.</p>
                 
@@ -390,11 +390,12 @@
                         <label for="inquiryType">Inquiry Type</label>
                         <select id="inquiryType" class="form-control" required>
                             <option value="" disabled selected>Select service requirements</option>
-                            <option value="CCTV Installation">CCTV Camera Installation</option>
-                            <option value="Building Network">Building Infrastructure Networking</option>
-                            <option value="Laptop Purchase">Laptops & Computer Hardware Purchase</option>
-                            <option value="Government Authority Supply">Government Supply & Contracting</option>
-                            <option value="Accessories Inquiry">Accessories & Cables Bulk Purchase</option>
+                            <option value="cctv">CCTV Camera Installation</option>
+                            <option value="sales">Selling & Purchasing Computers & Laptops</option>
+                            <option value="repair">Repairing Computers & Laptops</option>
+                            <option value="software">System Windows & Software Installation</option>
+                            <option value="wifi">Wi-Fi Modems Reset & Setup</option>
+                            <option value="accessories">Selling & Purchasing Accessories</option>
                         </select>
                     </div>
 
@@ -415,13 +416,50 @@
             <i class="fa-solid fa-circle-check"></i>
         </div>
         <div>
-            <h4 style="color: var(--bg-white); font-size: 0.95rem; margin-bottom: 2px;">Inquiry Sent Successfully!</h4>
-            <p style="color: #94a3b8; font-size: 0.8rem;">Shami Team will contact you shortly.</p>
+            <h4 style="color: var(--bg-white); font-size: 0.95rem; margin-bottom: 2px;">Inquiry Invoice Generated!</h4>
+            <p style="color: #94a3b8; font-size: 0.8rem;">Redirecting to WhatsApp support...</p>
+        </div>
+    </div>
+
+    <!-- Custom Invoice Preview Modal overlay -->
+    <div id="invoiceModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 3000; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: var(--bg-white); border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: var(--shadow-xl); width: 100%; max-width: 500px; padding: 30px; position: relative; animation: float 0.3s ease;">
+            <!-- Modal Close button -->
+            <button onclick="closeInvoiceModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></button>
+            
+            <!-- Invoice header -->
+            <div style="border-bottom: 2px dashed var(--border-color); padding-bottom: 15px; margin-bottom: 20px; text-align: center;">
+                <div style="font-family: var(--font-heading); font-weight: 800; font-size: 1.25rem; color: var(--secondary-color); margin-bottom: 5px;">
+                    <i class="fa-solid fa-file-invoice" style="color: var(--primary-color); margin-right: 5px;"></i> INQUIRY INVOICE
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Shami Computer Care & CCTV</p>
+                <p id="invoiceDate" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;"></p>
+            </div>
+            
+            <!-- Invoice fields -->
+            <div style="font-size: 0.9rem; color: var(--text-color); margin-bottom: 25px; line-height: 1.8;">
+                <p style="margin-bottom: 8px;"><strong>Customer Name:</strong> <span id="invName" style="color: var(--text-dark);"></span></p>
+                <p style="margin-bottom: 8px;"><strong>Phone Number:</strong> <span id="invPhone"></span></p>
+                <p style="margin-bottom: 8px;"><strong>Email Address:</strong> <span id="invEmail"></span></p>
+                <p style="margin-bottom: 8px;"><strong>Selected Service:</strong> <span id="invService" style="color: var(--primary-color); font-weight: 700;"></span></p>
+                <p style="margin-top: 15px; margin-bottom: 5px;"><strong>Details:</strong></p>
+                <div id="invMessage" style="background: var(--bg-light); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; font-size: 0.85rem; max-height: 120px; overflow-y: auto; white-space: pre-wrap; color: var(--text-color); line-height: 1.5;"></div>
+            </div>
+            
+            <!-- Invoice actions -->
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; display: flex; gap: 10px;">
+                <button onclick="closeInvoiceModal()" class="btn btn-outline" style="flex: 1; padding: 10px 0;">Cancel</button>
+                <button onclick="sendToWhatsApp()" class="btn btn-primary" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 0;">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Send to WhatsApp
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- Page Javascript for Product Tab switching and Custom inquiry triggers -->
     <script>
+        let invoiceData = {};
+
         // Tab switching logic
         function switchTab(evt, tabName) {
             // Get all elements with class="tab-content" and hide them
@@ -445,21 +483,70 @@
         function handleInquirySubmit(event) {
             event.preventDefault();
             
-            // Get values (for display verification/processing simulation)
             const name = document.getElementById('fullName').value;
             const phone = document.getElementById('phoneNumber').value;
-            const service = document.getElementById('inquiryType').value;
+            const email = document.getElementById('emailAddress').value;
+            const message = document.getElementById('messageText').value;
             
-            console.log(`Submitting Inquiry from: ${name}, Phone: ${phone}, Service: ${service}`);
+            const serviceSelect = document.getElementById('inquiryType');
+            const serviceText = serviceSelect.options[serviceSelect.selectedIndex].text;
             
-            // Trigger beautiful Toast notification
-            const toast = document.getElementById('inquiryToast');
-            toast.classList.add('show');
+            // Store invoice data globally
+            invoiceData = {
+                name,
+                email,
+                phone,
+                serviceText,
+                message
+            };
             
-            // Reset form
+            // Populate Modal Fields
+            document.getElementById('invName').innerText = name;
+            document.getElementById('invPhone').innerText = phone;
+            document.getElementById('invEmail').innerText = email;
+            document.getElementById('invService').innerText = serviceText;
+            document.getElementById('invMessage').innerText = message;
+            
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('invoiceDate').innerText = new Date().toLocaleDateString('en-US', options);
+            
+            // Open Modal
+            document.getElementById('invoiceModal').style.display = 'flex';
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoiceModal').style.display = 'none';
+        }
+
+        function sendToWhatsApp() {
+            // Invoice Message template for WhatsApp
+            const textMessage = 
+`📄 *INQUIRY INVOICE - SHAMI COMPUTER CARE*
+----------------------------------------
+*Client Name:* ${invoiceData.name}
+*Phone Number:* ${invoiceData.phone}
+*Email Address:* ${invoiceData.email}
+*Service Requested:* ${invoiceData.serviceText}
+
+*Project Details:*
+${invoiceData.message}
+----------------------------------------
+_Generated via Shami Computer Care & CCTV Website_`;
+
+            // Prepare WhatsApp URL (Sending to business hotline number)
+            const businessPhone = "923064565908"; 
+            const waUrl = `https://wa.me/${businessPhone}?text=${encodeURIComponent(textMessage)}`;
+            
+            // Redirect to WhatsApp
+            window.open(waUrl, '_blank');
+            
+            // Hide modal and reset form
+            document.getElementById('invoiceModal').style.display = 'none';
             document.getElementById('projectInquiryForm').reset();
             
-            // Dismiss toast after 4 seconds
+            // Show toast
+            const toast = document.getElementById('inquiryToast');
+            toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 4000);
