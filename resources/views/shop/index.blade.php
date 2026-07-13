@@ -101,7 +101,7 @@
 
 <!-- Shop Sub-Navbar Category Menu -->
 <div class="shop-sub-navbar" style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-color); position: sticky; top: 80px; z-index: 999; box-shadow: var(--shadow-sm); overflow: visible;">
-    <div class="container" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; overflow-x: auto; white-space: nowrap; padding: 0 20px; height: 60px;">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 20px; height: 60px; overflow: visible;">
         <ul style="display: flex; gap: 25px; list-style: none; padding: 0; margin: 0; align-items: center;">
             <li style="position: relative;">
                 <a href="{{ route('shop.index') }}" style="font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; color: {{ !$currentCategory ? 'var(--primary-color)' : 'var(--text-color)' }}; text-decoration: none; padding: 18px 0; display: inline-block;">All Products</a>

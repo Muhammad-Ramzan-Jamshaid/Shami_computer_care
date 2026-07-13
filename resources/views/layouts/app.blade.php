@@ -56,6 +56,23 @@
                 <li class="nav-item">
                     <a href="{{ url('/contact') }}" class="nav-link {{ Request::is('contact') ? 'active' : '' }}">Contact</a>
                 </li>
+
+                @if(session()->has('user_logged_in'))
+                <li class="nav-item" style="display: flex; align-items: center; gap: 15px; padding-left: 10px;">
+                    <span style="font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; color: var(--secondary-color); display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-user" style="color: var(--primary-color); font-size: 1.1rem;"></i> {{ session('user_name') }}</span>
+                    <form action="{{ route('logout') }}" method="POST" style="margin: 0; display: inline-block;">
+                        @csrf
+                        <button type="submit" class="btn btn-outline" style="padding: 6px 14px; font-size: 0.8rem; border-color: #ef4444; color: #ef4444; border-radius: var(--radius-sm); font-weight: 700; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#ef4444'; this.style.color='var(--bg-white)';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ef4444';">Logout</button>
+                    </form>
+                </li>
+                @else
+                <li class="nav-item">
+                    <a href="{{ route('login') }}" class="nav-link {{ Request::is('login') ? 'active' : '' }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('register') }}" class="nav-link {{ Request::is('register') ? 'active' : '' }}">Register</a>
+                </li>
+                @endif
             </ul>
         </div>
     </header>

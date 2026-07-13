@@ -22,6 +22,13 @@ Route::get('/blog', function () {
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/category/{slug}', [ShopController::class, 'index'])->name('shop.category');
 
+// User Auth Routes
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/login', [AuthController::class, 'showUserLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'userLogin']);
+Route::post('/logout', [AuthController::class, 'userLogout'])->name('logout');
+
 // Admin Auth Routes
 Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login']);
