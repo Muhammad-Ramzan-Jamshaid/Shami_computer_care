@@ -1,84 +1,93 @@
-@extends('layouts.app')
+@extends('layouts.admin_layout')
 
-@section('content')
-<section class="admin-products-create-section section-padding" style="background-color: var(--bg-light); min-height: calc(100vh - 160px); padding: 50px 20px;">
-    <div class="container" style="max-width: 700px; margin: 0 auto;">
-        
-        <!-- Header row -->
-        <div style="margin-bottom: 30px;">
-            <span class="badge">Inventory</span>
-            <h2 style="font-family: var(--font-heading); font-size: 2rem; color: var(--secondary-color); font-weight: 800; margin-top: 5px;">Add New Product</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Fill in the details below to add a new product to the shop database.</p>
-        </div>
-
-        <!-- Form Card -->
-        <div style="background: var(--bg-white); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 40px 30px; box-shadow: var(--shadow-sm);">
-            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="name" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Product Name</label>
-                    <input type="text" name="name" id="name" class="form-control" placeholder="e.g. Dell Latitude 5420" value="{{ old('name') }}" required style="width: 100%;">
-                    @error('name')
-                        <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="grid grid-2" style="gap: 20px; margin-bottom: 20px;">
-                    <div class="form-group">
-                        <label for="category_id" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Category</label>
-                        <select name="category_id" id="category_id" class="form-control" required style="width: 100%; height: 45px;">
-                            <option value="" disabled selected>Select Category</option>
-                            @foreach($categories as $parent)
-                                <optgroup label="{{ $parent->name }}">
-                                    @if($parent->children->isEmpty())
-                                        <option value="{{ $parent->id }}">{{ $parent->name }}</option>
-                                    @else
-                                        @foreach($parent->children as $child)
-                                            <option value="{{ $child->id }}" {{ old('category_id') == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </optgroup>
-                            @endforeach
-                        </select>
-                        @error('category_id')
-                            <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="price" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Price (Rs.)</label>
-                        <input type="number" name="price" id="price" class="form-control" placeholder="e.g. 135000" value="{{ old('price') }}" required min="0" style="width: 100%;">
-                        @error('price')
-                            <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom: 20px;">
-                    <label for="image" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Product Image</label>
-                    <input type="file" name="image" id="image" class="form-control" accept="image/*" style="width: 100%; padding: 8px 15px;">
-                    <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 5px;">Upload a high-quality picture. Max size: 2MB. Format: JPG, PNG, WEBP.</small>
-                    @error('image')
-                        <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group" style="margin-bottom: 30px;">
-                    <label for="description" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Product Description</label>
-                    <textarea name="description" id="description" class="form-control" rows="5" placeholder="Provide product specifications and core features..." style="width: 100%;">{{ old('description') }}</textarea>
-                    @error('description')
-                        <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div style="border-top: 1px solid var(--border-color); padding-top: 25px; display: flex; gap: 15px; justify-content: flex-end;">
-                    <a href="{{ route('admin.products.index') }}" class="btn btn-outline" style="padding: 10px 24px;">Cancel</a>
-                    <button type="submit" class="btn btn-primary" style="padding: 10px 30px;">Create Product</button>
-                </div>
-            </form>
-        </div>
-
+@section('admin_content')
+<div style="max-width: 700px; margin: 0 auto;">
+    
+    <!-- Header Backlink -->
+    <div style="margin-bottom: 25px;">
+        <a href="{{ route('admin.products.index') }}" style="color: var(--primary-color); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Products
+        </a>
     </div>
-</section>
+
+    <div style="margin-bottom: 30px;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--secondary-color); font-weight: 800; margin: 0;">Add Product</h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Configure pricing, descriptions, and file images for the catalog.</p>
+    </div>
+
+    <!-- Product Form -->
+    <div style="background: var(--bg-white); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 35px; box-shadow: var(--shadow-sm);">
+        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <!-- Product Name -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="name" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Product Name</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="e.g. Dell Latitude 5490 Core i5" value="{{ old('name') }}" required style="width: 100%;">
+                @error('name')
+                    <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="grid grid-2" style="gap: 20px; margin-bottom: 20px;">
+                <!-- Category ID -->
+                <div class="form-group">
+                    <label for="category_id" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Product Category</label>
+                    <select name="category_id" id="category_id" class="form-control" required style="width: 100%; height: 42px; padding: 0 15px;">
+                        <option value="">Select Category</option>
+                        @foreach($categories as $parent)
+                            @if($parent->children->isNotEmpty())
+                                <optgroup label="{{ $parent->name }}">
+                                    @foreach($parent->children as $child)
+                                        <option value="{{ $child->id }}" {{ old('category_id') == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @else
+                                <option value="{{ $parent->id }}" {{ old('category_id') == $parent->id ? 'selected' : '' }}>{{ $parent->name }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Price -->
+                <div class="form-group">
+                    <label for="price" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Price (Rs.)</label>
+                    <input type="number" name="price" id="price" class="form-control" placeholder="e.g. 45000" value="{{ old('price') }}" required style="width: 100%;">
+                    @error('price')
+                        <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label for="description" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Description & Specs</label>
+                <textarea name="description" id="description" class="form-control" rows="4" placeholder="Enter full specifications, memory capacity, SSD, or cable length..." style="width: 100%;">{{ old('description') }}</textarea>
+                @error('description')
+                    <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <!-- Image File Upload -->
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label for="image" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Product Image (Optional)</label>
+                <input type="file" name="image" id="image" class="form-control" style="width: 100%; padding: 8px;" accept="image/*">
+                @error('image')
+                    <span style="color: #b91c1c; font-size: 0.75rem; margin-top: 5px; display: block;">{{ $message }}</span>
+                @enderror
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Supported file formats: JPEG, PNG, JPG, WEBP. Max size: 2MB.</p>
+            </div>
+
+            <!-- Submit buttons -->
+            <div style="display: flex; gap: 15px; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 25px;">
+                <a href="{{ route('admin.products.index') }}" class="btn btn-outline" style="padding: 10px 24px; text-decoration: none;">Cancel</a>
+                <button type="submit" class="btn btn-primary" style="padding: 10px 30px; font-weight: 700;">Create Product</button>
+            </div>
+        </form>
+    </div>
+
+</div>
 @endsection

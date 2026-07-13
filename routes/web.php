@@ -29,6 +29,9 @@ Route::get('/login', [AuthController::class, 'showUserLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'userLogin']);
 Route::post('/logout', [AuthController::class, 'userLogout'])->name('logout');
 
+// User Dashboard (Self-Protected in controller)
+Route::get('/dashboard', [AuthController::class, 'userDashboard'])->name('user.dashboard');
+
 // Admin Auth Routes
 Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login']);
@@ -45,4 +48,12 @@ Route::middleware([IsAdmin::class])->group(function () {
     Route::get('/admin/products/{id}/edit', [AdminController::class, 'edit'])->name('admin.products.edit');
     Route::post('/admin/products/{id}/update', [AdminController::class, 'update'])->name('admin.products.update');
     Route::post('/admin/products/{id}/delete', [AdminController::class, 'destroy'])->name('admin.products.delete');
+
+    // Categories Management
+    Route::get('/admin/categories', [AdminController::class, 'categoriesIndex'])->name('admin.categories.index');
+    Route::get('/admin/categories/create', [AdminController::class, 'categoriesCreate'])->name('admin.categories.create');
+    Route::post('/admin/categories/store', [AdminController::class, 'categoriesStore'])->name('admin.categories.store');
+    Route::get('/admin/categories/{id}/edit', [AdminController::class, 'categoriesEdit'])->name('admin.categories.edit');
+    Route::post('/admin/categories/{id}/update', [AdminController::class, 'categoriesUpdate'])->name('admin.categories.update');
+    Route::post('/admin/categories/{id}/delete', [AdminController::class, 'categoriesDestroy'])->name('admin.categories.delete');
 });

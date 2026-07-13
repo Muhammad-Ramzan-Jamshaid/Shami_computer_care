@@ -274,10 +274,7 @@
                 <input type="text" id="custName" class="form-control" placeholder="e.g. Hammad Khan" required style="width: 100%; height: 38px; font-size: 0.85rem;">
             </div>
 
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label for="custPhone" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 0.85rem;">Phone Number</label>
-                <input type="tel" id="custPhone" class="form-control" placeholder="e.g. 03217654321" required style="width: 100%; height: 38px; font-size: 0.85rem;">
-            </div>
+
 
             <div class="form-group" style="margin-bottom: 20px;">
                 <label for="custMessage" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 0.85rem;">Quantity & Custom Details</label>
@@ -328,7 +325,6 @@
         event.preventDefault();
         
         const custName = document.getElementById('custName').value;
-        const custPhone = document.getElementById('custPhone').value;
         const custMessage = document.getElementById('custMessage').value;
         
         // Generate WhatsApp template string
@@ -340,7 +336,6 @@
 
 *Customer Details:*
 *Name:* ${custName}
-*Phone:* ${custPhone}
 
 *Order Instructions / Quantity:*
 ${custMessage}

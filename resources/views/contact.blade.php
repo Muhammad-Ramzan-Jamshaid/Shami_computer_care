@@ -79,16 +79,7 @@
                         <label for="contactName">Full Name</label>
                         <input type="text" id="contactName" class="form-control" placeholder="e.g. Hammad Khan" required>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="contactEmail">Email Address</label>
-                        <input type="email" id="contactEmail" class="form-control" placeholder="e.g. hammad@domain.com" required>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="contactPhone">Phone Number</label>
-                        <input type="tel" id="contactPhone" class="form-control" placeholder="e.g. 03217654321" required>
-                    </div>
 
                     <div class="form-group">
                         <label for="contactService">Select Service</label>
@@ -132,8 +123,7 @@
             <!-- Invoice fields -->
             <div style="font-size: 0.9rem; color: var(--text-color); margin-bottom: 25px; line-height: 1.8;">
                 <p style="margin-bottom: 8px;"><strong>Customer Name:</strong> <span id="invName" style="color: var(--text-dark);"></span></p>
-                <p style="margin-bottom: 8px;"><strong>Phone Number:</strong> <span id="invPhone"></span></p>
-                <p style="margin-bottom: 8px;"><strong>Email Address:</strong> <span id="invEmail"></span></p>
+
                 <p style="margin-bottom: 8px;"><strong>Selected Service:</strong> <span id="invService" style="color: var(--primary-color); font-weight: 700;"></span></p>
                 <p style="margin-top: 15px; margin-bottom: 5px;"><strong>Details:</strong></p>
                 <div id="invMessage" style="background: var(--bg-light); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 12px; font-size: 0.85rem; max-height: 120px; overflow-y: auto; white-space: pre-wrap; color: var(--text-color); line-height: 1.5;"></div>
@@ -180,8 +170,6 @@
             event.preventDefault();
             
             const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-            const phone = document.getElementById('contactPhone').value;
             const message = document.getElementById('contactMessage').value;
             
             const serviceSelect = document.getElementById('contactService');
@@ -190,16 +178,12 @@
             // Store invoice data globally
             invoiceData = {
                 name,
-                email,
-                phone,
                 serviceText,
                 message
             };
             
             // Populate Modal Fields
             document.getElementById('invName').innerText = name;
-            document.getElementById('invPhone').innerText = phone;
-            document.getElementById('invEmail').innerText = email;
             document.getElementById('invService').innerText = serviceText;
             document.getElementById('invMessage').innerText = message;
             
@@ -220,8 +204,6 @@
 `📄 *INQUIRY INVOICE - SHAMI COMPUTER CARE*
 ----------------------------------------
 *Client Name:* ${invoiceData.name}
-*Phone Number:* ${invoiceData.phone}
-*Email Address:* ${invoiceData.email}
 *Service Requested:* ${invoiceData.serviceText}
 
 *Project Details:*

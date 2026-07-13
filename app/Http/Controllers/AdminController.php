@@ -135,4 +135,70 @@ class AdminController extends Controller
 
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
     }
+
+    // --- Categories CRUD Methods ---
+    
+    public function categoriesIndex()
+    {
+        $categories = Category::with('parent')->latest()->paginate(15);
+        return view('admin.categories.index', compact('categories'));
+    }
+
+    public function categoriesCreate()
+    {
+        $parentCategories = Category::whereNull('parent_id')->get();
+        return view('admin.categories.create', compact('parentCategories'));
+    }
+
+    public function categoriesStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:categories,id'
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+            'parent_id' => $request->parent_id
+        ]);
+
+        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
+    }
+
+    public function categoriesEdit($id)
+    {
+        $category = Category::findOrFail($id);
+        $parentCategories = Category::whereNull('parent_id')->where('id', '!=', $category->id)->get();
+        return view('admin.categories.edit', compact('category', 'parentCategories'));
+    }
+
+    public function categoriesUpdate(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:categories,id'
+        ]);
+
+        $category->update([
+            'name' => $request->name,
+            'parent_id' => $request->parent_id
+        ]);
+
+        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
+    }
+
+    public function categoriesDestroy($id)
+    {
+        $category = Category::findOrFail($id);
+        
+        if ($category->children()->exists()) {
+            return redirect()->route('admin.categories.index')->with('error', 'Cannot delete category. It contains sub-categories. Delete sub-categories first.');
+        }
+
+        $category->delete();
+
+        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+    }
 }

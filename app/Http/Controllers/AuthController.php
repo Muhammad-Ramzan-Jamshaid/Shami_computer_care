@@ -110,4 +110,12 @@ class AuthController extends Controller
         session()->forget(['user_logged_in', 'user_id', 'user_name', 'user_email']);
         return redirect('/')->with('success', 'Logged out successfully.');
     }
+
+    public function userDashboard()
+    {
+        if (!session()->has('user_logged_in')) {
+            return redirect('/login')->with('error', 'Please login to access your dashboard.');
+        }
+        return view('dashboard');
+    }
 }
