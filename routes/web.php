@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Middleware\IsAdmin;
 
 Route::get('/', function () {
@@ -14,9 +15,8 @@ Route::get('/contact', function () {
     return view('contact');
 });
 
-Route::get('/blog', function () {
-    return view('blog');
-});
+// Public Projects Route
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 
 // Shop Routes
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
@@ -29,7 +29,7 @@ Route::get('/login', [AuthController::class, 'showUserLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'userLogin']);
 Route::post('/logout', [AuthController::class, 'userLogout'])->name('logout');
 
-// User Dashboard (Self-Protected in controller)
+// User Dashboard
 Route::get('/dashboard', [AuthController::class, 'userDashboard'])->name('user.dashboard');
 
 // Admin Auth Routes
@@ -56,4 +56,12 @@ Route::middleware([IsAdmin::class])->group(function () {
     Route::get('/admin/categories/{id}/edit', [AdminController::class, 'categoriesEdit'])->name('admin.categories.edit');
     Route::post('/admin/categories/{id}/update', [AdminController::class, 'categoriesUpdate'])->name('admin.categories.update');
     Route::post('/admin/categories/{id}/delete', [AdminController::class, 'categoriesDestroy'])->name('admin.categories.delete');
+
+    // Projects Management
+    Route::get('/admin/projects', [AdminController::class, 'projectsIndex'])->name('admin.projects.index');
+    Route::get('/admin/projects/create', [AdminController::class, 'projectsCreate'])->name('admin.projects.create');
+    Route::post('/admin/projects/store', [AdminController::class, 'projectsStore'])->name('admin.projects.store');
+    Route::get('/admin/projects/{id}/edit', [AdminController::class, 'projectsEdit'])->name('admin.projects.edit');
+    Route::post('/admin/projects/{id}/update', [AdminController::class, 'projectsUpdate'])->name('admin.projects.update');
+    Route::post('/admin/projects/{id}/delete', [AdminController::class, 'projectsDestroy'])->name('admin.projects.delete');
 });

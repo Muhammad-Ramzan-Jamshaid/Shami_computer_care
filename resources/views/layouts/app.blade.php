@@ -44,7 +44,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ url('/blog') }}" class="nav-link {{ Request::is('blog') ? 'active' : '' }}">Blog</a>
+                    <a href="{{ url('/projects') }}" class="nav-link {{ Request::is('projects*') ? 'active' : '' }}">Projects</a>
                 </li>
                 
                 <li class="nav-item">
@@ -102,11 +102,11 @@
             <div class="footer-col">
                 <h4>Retail Shop</h4>
                 <ul class="footer-links">
+                    <li><a href="{{ url('/shop') }}">Store Catalog</a></li>
+                    <li><a href="{{ url('/projects') }}">Our Projects</a></li>
                     <li><a href="{{ url('/#laptops') }}">Premium Laptops</a></li>
                     <li><a href="{{ url('/#accessories') }}">HDMI & Ethernet Wires</a></li>
                     <li><a href="{{ url('/#accessories') }}">USB Flash Drives</a></li>
-                    <li><a href="{{ url('/#accessories') }}">Audio Speakers</a></li>
-                    <li><a href="{{ url('/#accessories') }}">Keyboards & Mouse</a></li>
                 </ul>
             </div>
 

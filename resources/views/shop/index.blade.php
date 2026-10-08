@@ -1,248 +1,294 @@
 @extends('layouts.app')
 
+@section('title', 'Shop Computers, Laptops & Accessories - Shami Computer Care')
+
 @section('content')
 <style>
-    .shop-sub-nav-item {
+    .shop-category-dropdown-wrap {
         position: relative;
+        display: inline-block;
     }
-    .shop-sub-dropdown {
+    .shop-category-btn {
+        background-color: var(--secondary-color);
+        color: var(--bg-white);
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: var(--transition-smooth);
+    }
+    .shop-category-btn:hover {
+        background-color: var(--primary-color);
+    }
+    .shop-main-dropdown {
         position: absolute;
         top: 100%;
-        left: 50%;
-        transform: translateX(-50%) translateY(10px);
-        background-color: var(--bg-white);
+        left: 0;
+        margin-top: 8px;
+        background: var(--bg-white);
         border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        box-shadow: var(--shadow-lg);
-        min-width: 190px;
-        padding: 8px 0;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-xl);
+        min-width: 250px;
+        max-height: 420px;
+        overflow-y: auto;
         opacity: 0;
-        pointer-events: none;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1002;
-        text-align: left;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.25s ease;
+        z-index: 1050;
+        padding: 8px 0;
     }
-    .shop-sub-nav-item:hover .shop-sub-dropdown {
+    .shop-category-dropdown-wrap:hover .shop-main-dropdown,
+    .shop-category-dropdown-wrap:focus-within .shop-main-dropdown {
         opacity: 1;
-        pointer-events: auto;
-        transform: translateX(-50%) translateY(0);
+        visibility: visible;
+        transform: translateY(0);
     }
-    .shop-sub-dropdown-link {
+    .shop-cat-item {
+        position: relative;
+    }
+    .shop-cat-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 0.88rem;
+        transition: background 0.2s, color 0.2s;
+    }
+    .shop-cat-link:hover {
+        background-color: rgba(14, 165, 233, 0.08);
+        color: var(--primary-color);
+    }
+    .shop-sub-cat-menu {
+        display: none;
+        background-color: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 4px 0;
+    }
+    .shop-cat-item:hover .shop-sub-cat-menu {
         display: block;
-        padding: 8px 20px;
-        font-size: 0.85rem;
+    }
+    .shop-sub-cat-link {
+        display: block;
+        padding: 7px 20px 7px 35px;
+        font-size: 0.82rem;
         color: var(--text-color);
         text-decoration: none;
-        transition: var(--transition-smooth);
-        font-family: var(--font-body);
-        font-weight: 550;
+        font-weight: 500;
+        transition: color 0.2s;
     }
-    .shop-sub-dropdown-link:hover {
-        background-color: rgba(14, 165, 233, 0.05);
+    .shop-sub-cat-link:hover {
         color: var(--primary-color);
     }
     .shop-hero-banner {
         background: linear-gradient(135deg, var(--secondary-color) 0%, #1e293b 100%);
         color: var(--bg-white);
-        padding: 45px 0;
+        padding: 40px 0;
         position: relative;
         overflow: hidden;
     }
-    .shop-hero-banner::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 350px;
-        height: 100%;
-        background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
-        pointer-events: none;
+    .shop-layout-full {
+        width: 100%;
+        margin-top: 35px;
     }
-    .shop-layout {
-        display: grid;
-        grid-template-columns: 240px 1fr;
-        gap: 30px;
-        margin-top: 40px;
-    }
-    .category-sidebar {
-        background: var(--bg-white);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        padding: 25px;
-        height: fit-content;
-        position: sticky;
-        top: 155px;
-    }
-    .category-sidebar-link {
+    .admin-shop-bar {
+        background: #f1f5f9;
+        border: 1px dashed var(--primary-color);
+        border-radius: var(--radius-sm);
+        padding: 12px 20px;
+        margin-bottom: 25px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
-        color: var(--text-color);
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 550;
-        transition: var(--transition-smooth);
-        border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-    }
-    .category-sidebar-link:hover, .category-sidebar-link.active {
-        color: var(--primary-color);
-        padding-left: 5px;
-    }
-    @media (max-width: 900px) {
-        .shop-layout {
-            grid-template-columns: 1fr;
-        }
-        .category-sidebar {
-            display: none;
-        }
+        justify-content: space-between;
     }
 </style>
 
-<!-- Shop Sub-Navbar Category Menu -->
-<div class="shop-sub-navbar" style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-color); position: sticky; top: 80px; z-index: 999; box-shadow: var(--shadow-sm); overflow: visible;">
-    <div class="container" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 20px; height: 60px; overflow: visible;">
-        <ul style="display: flex; gap: 25px; list-style: none; padding: 0; margin: 0; align-items: center;">
-            <li style="position: relative;">
-                <a href="{{ route('shop.index') }}" style="font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; color: {{ !$currentCategory ? 'var(--primary-color)' : 'var(--text-color)' }}; text-decoration: none; padding: 18px 0; display: inline-block;">All Products</a>
-            </li>
-            @foreach($categories as $cat)
-                <li class="shop-sub-nav-item" style="display: inline-block;">
-                    @if($cat->children->isNotEmpty())
-                        <span class="shop-sub-nav-link" style="font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; color: {{ $currentCategory && ($currentCategory->id == $cat->id || $currentCategory->parent_id == $cat->id) ? 'var(--primary-color)' : 'var(--text-color)' }}; cursor: pointer; padding: 18px 0; display: flex; align-items: center; gap: 4px;">
-                            {{ $cat->name }} <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem;"></i>
-                        </span>
-                        <!-- Sub-dropdown -->
-                        <div class="shop-sub-dropdown">
-                            <a href="{{ route('shop.category', $cat->slug) }}" class="shop-sub-dropdown-link" style="font-weight: 700; border-bottom: 1px solid var(--border-color); color: var(--secondary-color);">All {{ $cat->name }}</a>
-                            @foreach($cat->children as $child)
-                                <a href="{{ route('shop.category', $child->slug) }}" class="shop-sub-dropdown-link" style="color: {{ $currentCategory && $currentCategory->id == $child->id ? 'var(--primary-color)' : 'var(--text-color)' }};">{{ $child->name }}</a>
-                            @endforeach
-                        </div>
-                    @else
-                        <a href="{{ route('shop.category', $cat->slug) }}" style="font-family: var(--font-heading); font-size: 0.9rem; font-weight: 600; color: {{ $currentCategory && $currentCategory->id == $cat->id ? 'var(--primary-color)' : 'var(--text-color)' }}; text-decoration: none; padding: 18px 0; display: inline-block;">
-                            {{ $cat->name }}
-                        </a>
-                    @endif
-                </li>
-            @endforeach
-        </ul>
+<!-- Shop Sub-Navbar Header with Single Category Dropdown and Search -->
+<div class="shop-sub-navbar" style="background-color: var(--bg-white); border-bottom: 1px solid var(--border-color); position: sticky; top: 80px; z-index: 999; box-shadow: var(--shadow-sm);">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 12px 20px;">
+        
+        <!-- Single Categories Dropdown Menu -->
+        <div class="shop-category-dropdown-wrap">
+            <button class="shop-category-btn" type="button">
+                <i class="fa-solid fa-list-ul"></i> Categories <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; margin-left: 5px;"></i>
+            </button>
+            <div class="shop-main-dropdown">
+                <a href="{{ route('shop.index') }}" class="shop-cat-link" style="border-bottom: 1px solid var(--border-color); font-weight: 700; color: var(--primary-color);">
+                    <span><i class="fa-solid fa-border-all" style="margin-right: 8px;"></i> All Products</span>
+                </a>
 
-        <!-- Fast Search -->
-        <form action="{{ route('shop.index') }}" method="GET" style="display: flex; align-items: center; margin: 0; gap: 5px;">
-            <input type="text" name="search" placeholder="Search products..." value="{{ request('search') }}" style="border: 1px solid var(--border-color); padding: 8px 15px; border-radius: var(--radius-sm); font-size: 0.85rem; font-family: var(--font-body); width: 200px;">
-            <button type="submit" class="btn btn-primary btn-sm" style="padding: 8px 12px;"><i class="fa-solid fa-magnifying-glass"></i></button>
+                @foreach($categories as $cat)
+                    <div class="shop-cat-item">
+                        <a href="{{ route('shop.category', $cat->slug) }}" class="shop-cat-link {{ $currentCategory && ($currentCategory->id == $cat->id || $currentCategory->parent_id == $cat->id) ? 'active' : '' }}">
+                            <span>{{ $cat->name }}</span>
+                            @if($cat->children->isNotEmpty())
+                                <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--text-muted);"></i>
+                            @endif
+                        </a>
+
+                        @if($cat->children->isNotEmpty())
+                            <div class="shop-sub-cat-menu">
+                                <a href="{{ route('shop.category', $cat->slug) }}" class="shop-sub-cat-link" style="font-weight: 700; color: var(--secondary-color);">
+                                    All {{ $cat->name }}
+                                </a>
+                                @foreach($cat->children as $child)
+                                    <a href="{{ route('shop.category', $child->slug) }}" class="shop-sub-cat-link {{ $currentCategory && $currentCategory->id == $child->id ? 'active' : '' }}">
+                                        • {{ $child->name }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Fast Search Bar -->
+        <form action="{{ route('shop.index') }}" method="GET" style="display: flex; align-items: center; margin: 0; gap: 8px; flex: 1; max-width: 450px;">
+            <input type="text" name="search" placeholder="Search products by title or specs..." value="{{ request('search') }}" style="border: 1px solid var(--border-color); padding: 10px 16px; border-radius: var(--radius-sm); font-size: 0.88rem; font-family: var(--font-body); width: 100%;">
+            <button type="submit" class="btn btn-primary" style="padding: 10px 18px; white-space: nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
         </form>
+
     </div>
 </div>
 
 <!-- Shop Banner -->
 <div class="shop-hero-banner">
     <div class="container text-center">
-        <span class="badge" style="color: var(--primary-color);">Shami Hardware Hub</span>
-        <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 2.2rem; margin-top: 5px; margin-bottom: 10px;">
+        <span class="badge" style="color: #38bdf8;">Shami Hardware Store</span>
+        <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 2.1rem; margin-top: 5px; margin-bottom: 10px; color: #ffffff !important; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
             @if($currentCategory)
-                {{ $currentCategory->name }}
+                Category: {{ $currentCategory->name }}
             @else
                 Computers, Cables & Accessories Shop
             @endif
         </h1>
-        <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.95rem; max-width: 600px; margin: 0 auto;">Select from premium brand products, converters, high-speed cables, and storage devices. Order directly via WhatsApp invoice generation.</p>
+        <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; max-width: 600px; margin: 0 auto;">Select from premium brand products, converters, high-speed cables, and storage devices. Order directly via WhatsApp invoice generation.</p>
     </div>
 </div>
 
-<!-- Shop Catalog Content -->
+<!-- Shop Catalog Content (Full Width - Sidebar Removed) -->
 <section class="shop-content-section" style="padding-bottom: 80px;">
     <div class="container">
         
-        <div class="shop-layout">
-            
-            <!-- Category Sidebar -->
-            <aside class="category-sidebar">
-                <h4 style="font-family: var(--font-heading); font-size: 1.05rem; color: var(--secondary-color); font-weight: 700; margin-bottom: 20px; border-bottom: 2px solid var(--primary-color); padding-bottom: 8px;">Categories</h4>
-                <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <a href="{{ route('shop.index') }}" class="category-sidebar-link {{ !$currentCategory ? 'active' : '' }}">
-                        <span>All Categories</span>
-                        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
-                    </a>
-                    @foreach($categories as $cat)
-                        <a href="{{ route('shop.category', $cat->slug) }}" class="category-sidebar-link {{ $currentCategory && ($currentCategory->id == $cat->id || $currentCategory->parent_id == $cat->id) ? 'active' : '' }}">
-                            <span>{{ $cat->name }}</span>
-                            <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
-                        </a>
-                    @endforeach
-                </div>
-            </aside>
+        <div class="shop-layout-full">
 
-            <!-- Products Catalog Grid -->
-            <div>
-                <!-- Catalog Header -->
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
-                    <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 550;">
-                        Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }} Products
+            <!-- Admin Floating Control Banner (Visible ONLY when Admin is logged in) -->
+            @if(session()->has('admin_logged_in'))
+                <div class="admin-shop-bar">
+                    <div style="font-weight: 700; color: var(--secondary-color); font-size: 0.9rem;">
+                        <i class="fa-solid fa-user-shield" style="color: var(--primary-color); margin-right: 6px;"></i> Admin Control Active: You can edit or delete products directly from this catalog.
                     </div>
-                    
-                    @if(request('search'))
-                        <div style="font-size: 0.9rem; color: var(--text-color);">
-                            Search result for: "<strong>{{ request('search') }}</strong>" | <a href="{{ route('shop.index') }}" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Clear Filter</a>
-                        </div>
-                    @endif
+                    <div style="display: flex; gap: 10px;">
+                        <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn-sm" style="font-weight: 700;">
+                            <i class="fa-solid fa-plus-circle"></i> + Add New Product
+                        </a>
+                        <a href="{{ route('admin.products.index') }}" class="btn btn-outline btn-sm">
+                            <i class="fa-solid fa-list-check"></i> Manage in Dashboard
+                        </a>
+                    </div>
                 </div>
+            @endif
+            
+            <!-- Catalog Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+                <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 550;">
+                    Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }} Products
+                </div>
+                
+                @if(request('search'))
+                    <div style="font-size: 0.9rem; color: var(--text-color);">
+                        Search result for: "<strong>{{ request('search') }}</strong>" | <a href="{{ route('shop.index') }}" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">Clear Search Filter</a>
+                    </div>
+                @endif
+            </div>
 
-                <!-- Product Cards Grid -->
-                <div class="grid grid-3" style="gap: 30px;">
-                    @forelse($products as $p)
-                        @php
-                            $fallbackUrl = 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80'; // Laptop fallback
-                            $catLower = Str::lower($p->category->name);
-                            if (Str::contains($catLower, 'cable') || Str::contains($catLower, 'wire')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1601524909162-be87252be298?auto=format&fit=crop&w=500&q=80'; // Cable
-                            } elseif (Str::contains($catLower, 'usb') || Str::contains($catLower, 'storage')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?auto=format&fit=crop&w=500&q=80'; // USB
-                            } elseif (Str::contains($catLower, 'speaker') || Str::contains($catLower, 'sound')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80'; // Speaker
-                            } elseif (Str::contains($catLower, 'converter') || Str::contains($catLower, 'adapter')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=500&q=80'; // Converter
-                            } elseif (Str::contains($catLower, 'charger') || Str::contains($catLower, 'power')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=500&q=80'; // Charger
-                            } elseif (Str::contains($catLower, 'keyboard')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80'; // Keyboard
-                            } elseif (Str::contains($catLower, 'mouse')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=500&q=80'; // Mouse
-                            } elseif (Str::contains($catLower, 'headphone')) {
-                                $fallbackUrl = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80'; // Headphones
-                            }
-                        @endphp
-                        <div class="product-card" style="box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-white); transition: var(--transition-smooth);" onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='var(--shadow-lg)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)';">
-                            <div class="product-img-box" style="height: 180px; overflow: hidden; background-color: var(--bg-light); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; position: relative;">
-                                <span class="product-badge" style="position: absolute; top: 12px; left: 12px; font-size: 0.7rem; background: var(--secondary-color); color: var(--bg-white); padding: 4px 10px; border-radius: var(--radius-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">{{ $p->category->name }}</span>
-                                <img src="{{ $p->image_path ? asset($p->image_path) : $fallbackUrl }}" alt="{{ $p->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+            <!-- Product Cards Grid (3 Columns Full Width) -->
+            <div class="grid grid-3" style="gap: 30px;">
+                @forelse($products as $p)
+                    @php
+                        $fallbackUrl = 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=80'; // Laptop fallback
+                        $catLower = Str::lower($p->category->name);
+                        if (Str::contains($catLower, 'cable') || Str::contains($catLower, 'wire')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1601524909162-be87252be298?auto=format&fit=crop&w=500&q=80';
+                        } elseif (Str::contains($catLower, 'usb') || Str::contains($catLower, 'storage')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1618424181497-157f25b6ddd5?auto=format&fit=crop&w=500&q=80';
+                        } elseif (Str::contains($catLower, 'speaker') || Str::contains($catLower, 'sound')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=500&q=80';
+                        } elseif (Str::contains($catLower, 'converter') || Str::contains($catLower, 'adapter')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&w=500&q=80';
+                        } elseif (Str::contains($catLower, 'charger') || Str::contains($catLower, 'power')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=500&q=80';
+                        } elseif (Str::contains($catLower, 'keyboard')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=500&q=80';
+                        } elseif (Str::contains($catLower, 'mouse')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=500&q=80';
+                        } elseif (Str::contains($catLower, 'headphone')) {
+                            $fallbackUrl = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80';
+                        }
+                    @endphp
+                    <div class="product-card" style="box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-white); transition: var(--transition-smooth); display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='var(--shadow-lg)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-sm)';">
+                        
+                        <div class="product-img-box" style="height: 200px; overflow: hidden; background-color: var(--bg-light); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; position: relative;">
+                            <span class="product-badge" style="position: absolute; top: 12px; left: 12px; font-size: 0.7rem; background: var(--secondary-color); color: var(--bg-white); padding: 4px 10px; border-radius: var(--radius-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">{{ $p->category->name }}</span>
+                            <img src="{{ $p->image_path ? asset($p->image_path) : $fallbackUrl }}" alt="{{ $p->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+
+                        <div class="product-info" style="padding: 20px; flex: 1; display: flex; flex-direction: column;">
+                            <h3 class="product-title" style="font-family: var(--font-heading); font-size: 1.05rem; color: var(--secondary-color); font-weight: 750; margin-bottom: 8px; line-height: 1.4; height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ $p->name }}</h3>
+                            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; height: 50px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">{{ $p->description }}</p>
+                            
+                            <div class="product-footer flex-between" style="border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: auto; display: flex; justify-content: space-between; align-items: center;">
+                                <div class="product-price" style="font-size: 1.2rem; font-weight: 800; color: var(--primary-color);">Rs. {{ number_format($p->price) }}</div>
+                                <button class="btn btn-primary btn-sm btn-buy" onclick="openInvoice('{{ addslashes($p->name) }}', '{{ addslashes($p->category->name) }}')" style="padding: 8px 14px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;" title="Order via WhatsApp">
+                                    <i class="fa-solid fa-cart-shopping"></i> Order
+                                </button>
                             </div>
-                            <div class="product-info" style="padding: 20px;">
-                                <h3 class="product-title" style="font-family: var(--font-heading); font-size: 1rem; color: var(--secondary-color); font-weight: 750; margin-bottom: 8px; line-height: 1.4; height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ $p->name }}</h3>
-                                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; height: 50px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;">{{ $p->description }}</p>
-                                
-                                <div class="product-footer flex-between" style="border-top: 1px solid var(--border-color); padding-top: 15px; display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="product-price" style="font-size: 1.15rem; font-weight: 800; color: var(--primary-color);">Rs. {{ number_format($p->price) }}</div>
-                                    <button class="btn btn-primary btn-sm btn-buy" onclick="openInvoice('{{ addslashes($p->name) }}', '{{ addslashes($p->category->name) }}')" style="padding: 8px 12px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;" title="Order via WhatsApp">
-                                        <i class="fa-solid fa-cart-shopping"></i> Order
-                                    </button>
+
+                            <!-- Admin Quick Action Toolbar on Each Card (Visible ONLY for Logged-In Admin) -->
+                            @if(session()->has('admin_logged_in'))
+                                <div style="margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--border-color); display: flex; align-items: center; justify-content: space-between; background: #f8fafc; margin-left: -20px; margin-right: -20px; margin-bottom: -20px; padding: 10px 20px;">
+                                    <span style="font-size: 0.72rem; font-weight: 800; color: #64748b; text-transform: uppercase;"><i class="fa-solid fa-user-gear"></i> Admin:</span>
+                                    <div style="display: flex; gap: 6px;">
+                                        <a href="{{ route('admin.products.edit', $p->id) }}" class="btn btn-sm" style="background-color: var(--primary-color); color: #fff; padding: 4px 10px; font-size: 0.75rem; font-weight: 700;">
+                                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                                        </a>
+                                        <form action="{{ route('admin.products.delete', $p->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm" style="background-color: #ef4444; color: #fff; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; border: none;">
+                                                <i class="fa-solid fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 0; color: var(--text-muted);">
-                            <i class="fa-solid fa-circle-info" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px; display: block;"></i>
-                            <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--secondary-color); font-weight: 700; margin-bottom: 5px;">No Products Found</h3>
-                            <p style="font-size: 0.85rem;">Try adjusting search terms or checking another sub-category.</p>
-                        </div>
-                    @endforelse
-                </div>
+                            @endif
 
-                <!-- Pagination -->
-                <div style="margin-top: 40px; display: flex; justify-content: center;">
-                    {{ $products->links() }}
-                </div>
+                        </div>
+                    </div>
+                @empty
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 0; color: var(--text-muted); background: var(--bg-white); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                        <i class="fa-solid fa-circle-info" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px; display: block;"></i>
+                        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: var(--secondary-color); font-weight: 700; margin-bottom: 5px;">No Products Found</h3>
+                        <p style="font-size: 0.85rem;">Try adjusting search terms or checking another category.</p>
+                    </div>
+                @endforelse
+            </div>
+
+            <!-- Pagination -->
+            <div style="margin-top: 40px; display: flex; justify-content: center;">
+                {{ $products->links() }}
             </div>
 
         </div>
@@ -273,8 +319,6 @@
                 <label for="custName" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 0.85rem;">Your Name</label>
                 <input type="text" id="custName" class="form-control" placeholder="e.g. Hammad Khan" required style="width: 100%; height: 38px; font-size: 0.85rem;">
             </div>
-
-
 
             <div class="form-group" style="margin-bottom: 20px;">
                 <label for="custMessage" style="font-weight: 600; display: block; margin-bottom: 5px; font-size: 0.85rem;">Quantity & Custom Details</label>
@@ -327,7 +371,6 @@
         const custName = document.getElementById('custName').value;
         const custMessage = document.getElementById('custMessage').value;
         
-        // Generate WhatsApp template string
         const textMessage = 
 `🛒 *NEW SHOP ORDER INVOICE - SHAMI COMPUTER CARE*
 ----------------------------------------
@@ -345,13 +388,9 @@ _Generated via Shami Computer Care & CCTV Shop Page_`;
         const businessPhone = "923064565908"; 
         const waUrl = `https://wa.me/${businessPhone}?text=${encodeURIComponent(textMessage)}`;
         
-        // Redirect to WhatsApp
         window.open(waUrl, '_blank');
-        
-        // Close modal
         closeInvoice();
         
-        // Display toast alert
         const toast = document.getElementById('shopToast');
         toast.classList.add('show');
         setTimeout(() => {

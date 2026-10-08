@@ -16,6 +16,8 @@
                     <a href="#services" class="btn btn-outline">Our Services</a>
                 </div>
             </div>
+            <!-- Home Page Animations (Disabled / Commented out as requested) -->
+            <!--
             <style>
                 /* Timeline keyframes */
                 @keyframes laptopDrop {
@@ -119,158 +121,37 @@
                 }
 
                 /* Class animation declarations */
-                .stage-laptop {
-                    animation: laptopDrop 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                .stage-laptop { animation: laptopDrop 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+                .laptop-screen-anim { animation: screenOpen 1s cubic-bezier(0.175, 0.885, 0.32, 1.2) 1.2s forwards; }
+                .laptop-base-anim { animation: laptopBreakBase 1.2s cubic-bezier(0.25, 1, 0.5, 1) 10.5s forwards; }
+            </style>
+            -->
+
+            <!-- Static Layout Override (Animations hidden) -->
+            <style>
+                .stage-laptop, .laptop-screen-anim, .laptop-base-anim,
+                .stage-power-cable, .stage-speaker-left, .stage-speaker-right,
+                .stage-usb, .stage-cctv-1, .stage-cctv-2, .stage-cctv-3, .stage-cctv-4 {
+                    opacity: 1 !important;
+                    animation: none !important;
+                    transform: none !important;
                 }
                 .laptop-screen-anim {
-                    transform: rotateX(-90deg);
-                    transform-origin: bottom center;
-                    opacity: 0;
-                    animation: screenOpen 1s cubic-bezier(0.175, 0.885, 0.32, 1.2) 1.2s forwards, laptopBreakScreen 1.2s cubic-bezier(0.25, 1, 0.5, 1) 10.5s forwards;
-                }
-                .laptop-base-anim {
-                    animation: laptopBreakBase 1.2s cubic-bezier(0.25, 1, 0.5, 1) 10.5s forwards;
-                }
-                .screen-warning {
-                    position: absolute;
-                    top: 0; left: 0; width: 100%; height: 100%;
-                    background: #ef4444;
-                    color: white;
-                    font-family: monospace;
-                    font-size: 9px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    text-align: center;
-                    animation: fadeOutWarning 0.1s linear 3.2s forwards;
-                    z-index: 5;
-                }
-                .screen-boot {
-                    position: absolute;
-                    top: 0; left: 0; width: 100%; height: 100%;
-                    background: #0f172a;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0;
-                    visibility: hidden;
-                    animation: showBoot 0.1s linear 3.2s forwards, fadeOutBoot 0.1s linear 4.7s forwards;
-                    z-index: 6;
-                }
-                .screen-video {
-                    position: absolute;
-                    top: 0; left: 0; width: 100%; height: 100%;
-                    background: #000;
-                    opacity: 0;
-                    visibility: hidden;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    overflow: hidden;
-                    animation: showVideo 0.1s linear 7.5s forwards;
-                    z-index: 7;
-                }
-                .video-content {
-                    width: 200%;
-                    height: 200%;
-                    background: linear-gradient(45deg, #f43f5e, #3b82f6, #10b981, #eab308);
-                    background-size: 400% 400%;
-                    animation: gradientShift 4s ease infinite;
-                }
-                .stage-power-cable {
-                    opacity: 0;
-                    animation: powerCableConnect 0.8s ease-out 2.2s forwards;
-                }
-                .stage-speaker-left {
-                    opacity: 0;
-                    animation: speakerDrop 1.2s cubic-bezier(0.25, 1, 0.5, 1) 4.5s forwards;
-                }
-                .stage-speaker-right {
-                    opacity: 0;
-                    animation: speakerDrop 1.2s cubic-bezier(0.25, 1, 0.5, 1) 4.7s forwards;
+                    transform: rotateX(-20deg) !important;
+                    opacity: 1 !important;
                 }
                 .speaker-wire {
-                    stroke: #475569;
-                    stroke-width: 2.5;
-                    fill: none;
-                    stroke-dasharray: 300;
-                    stroke-dashoffset: 300;
+                    stroke-dashoffset: 0 !important;
                 }
-                .wire-left-active {
-                    animation: drawWire 1s ease-out 5.7s forwards;
+                .screen-boot, .screen-warning {
+                    display: none !important;
                 }
-                .wire-right-active {
-                    animation: drawWire 1s ease-out 5.9s forwards;
+                .screen-video {
+                    opacity: 1 !important;
+                    visibility: visible !important;
                 }
-                .stage-usb {
-                    opacity: 0;
-                    animation: usbConnect 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.2) 6.5s forwards;
-                }
-                .stage-cctv-1 {
-                    opacity: 0;
-                    animation: cctvDrop 1s cubic-bezier(0.25, 1, 0.5, 1) 8.2s forwards;
-                }
-                .stage-cctv-2 {
-                    opacity: 0;
-                    animation: cctvDrop 1s cubic-bezier(0.25, 1, 0.5, 1) 8.4s forwards;
-                }
-                .stage-cctv-3 {
-                    opacity: 0;
-                    animation: cctvDrop 1s cubic-bezier(0.25, 1, 0.5, 1) 8.6s forwards;
-                }
-                .stage-cctv-4 {
-                    opacity: 0;
-                    animation: cctvDrop 1s cubic-bezier(0.25, 1, 0.5, 1) 8.8s forwards;
-                }
-
-                .sound-wave {
-                    position: absolute;
-                    border: 2px solid var(--primary-color);
-                    border-radius: 50%;
-                    opacity: 0;
-                    pointer-events: none;
-                    z-index: 10;
-                }
-                .sound-wave-1 {
-                    width: 20px;
-                    height: 20px;
-                    top: 15px;
-                    left: 10px;
-                    animation: wavePulse 1.5s infinite ease-out 6.7s;
-                }
-                .sound-wave-2 {
-                    width: 20px;
-                    height: 20px;
-                    top: 15px;
-                    left: 10px;
-                    animation: wavePulse 1.5s infinite ease-out 7.4s;
-                }
-
-                /* Motherboard stage parts */
                 .stage-motherboard {
-                    opacity: 0;
-                    transform: translateY(60px) scale(0.7);
-                    animation: motherboardRise 1.5s cubic-bezier(0.25, 1, 0.5, 1) 10.5s forwards;
-                }
-                .floating-ic-cpu {
-                    animation: cpuFloat 1.8s cubic-bezier(0.25, 1, 0.5, 1) 11.4s forwards;
-                }
-                .ic-shadow-cpu {
-                    animation: cpuShadowShrink 1.8s cubic-bezier(0.25, 1, 0.5, 1) 11.4s forwards;
-                }
-                .floating-ic-ram {
-                    animation: ramFloat 1.8s cubic-bezier(0.25, 1, 0.5, 1) 11.6s forwards;
-                }
-                .ic-shadow-ram {
-                    animation: ramShadowShrink 1.8s cubic-bezier(0.25, 1, 0.5, 1) 11.6s forwards;
-                }
-                .floating-ic-bios {
-                    animation: biosFloat 1.8s cubic-bezier(0.25, 1, 0.5, 1) 11.8s forwards;
-                }
-                .ic-shadow-bios {
-                    animation: biosShadowShrink 1.8s cubic-bezier(0.25, 1, 0.5, 1) 11.8s forwards;
+                    display: none !important;
                 }
             </style>
 

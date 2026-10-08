@@ -172,9 +172,19 @@
                     <i class="fa-solid fa-tags"></i> Manage Categories
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.projects.index') }}" class="admin-sidebar-link {{ Request::is('admin/projects*') ? 'active' : '' }}">
+                    <i class="fa-solid fa-diagram-project"></i> Manage Projects
+                </a>
+            </li>
             <li style="margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 15px;">
                 <a href="{{ route('shop.index') }}" class="admin-sidebar-link" target="_blank" style="color: var(--primary-color);">
                     <i class="fa-solid fa-shop"></i> View Store Catalog
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('projects.index') }}" class="admin-sidebar-link" target="_blank" style="color: #38bdf8;">
+                    <i class="fa-solid fa-diagram-project"></i> View Projects Page
                 </a>
             </li>
         </ul>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Project;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -138,6 +139,49 @@ class DatabaseSeeder extends Seeder
                     ]
                 );
             }
+        }
+
+        // 4. Seed Sample Projects
+        $projects = [
+            [
+                'title' => 'Commercial Plaza CCTV & Security Network Installation',
+                'category' => 'CCTV Surveillance & Security',
+                'client' => 'Shami Commercial Center, Farooqabad',
+                'description' => 'Complete end-to-end installation of 32 IP HD CCTV Cameras, centralized NVR storage, night-vision infrared vision, and remote monitoring setup on mobile app.',
+                'details' => 'Installed high-definition Dahua/Hikvision cameras, 16-channel POE switches, CAT6 structured cabling, and 8TB surveillance hard disks with 24/7 backup capabilities.',
+                'image_path' => null
+            ],
+            [
+                'title' => 'Government High School Computer Lab Setup',
+                'category' => 'Government Supplies & IT Lab',
+                'client' => 'Education Department, Sheikhupura District',
+                'description' => 'Deployed 25 desktop workstations, high-speed Gigabit network switches, laser printers, and heavy duty UPS power backups for student computer lab.',
+                'details' => 'Supplied branded Core i5 computer sets, 22-inch LED monitors, CAT6 cabling, surge protectors, and configured Windows 11 Pro for educational environments.',
+                'image_path' => null
+            ],
+            [
+                'title' => 'Corporate Office Fiber Optic & Wi-Fi Network',
+                'category' => 'Networking & Fiber Connectivity',
+                'client' => 'Al-Rehman Business Tower',
+                'description' => 'Designed and deployed high-performance dual-band Wi-Fi access points, fiber optic backbone connectivity, and organized server rack assembly.',
+                'details' => 'Includes cable management, patch panel termination, Mikrotik router routing, VLAN setup, and network bandwidth optimization.',
+                'image_path' => null
+            ],
+            [
+                'title' => 'Bank Branch Security & Biometric Access Control',
+                'category' => 'Access Control & CCTV',
+                'client' => 'Farooqabad Commercial Bank',
+                'description' => 'Integrated biometric attendance & door access control system, motion sensors, panic alarm system, and 24/7 CCTV surveillance coverage.',
+                'details' => 'Custom installation adhering to strict financial institution security regulations, emergency battery backups, and encrypted cloud event recording.',
+                'image_path' => null
+            ]
+        ];
+
+        foreach ($projects as $proj) {
+            Project::updateOrCreate(
+                ['slug' => Str::slug($proj['title'])],
+                $proj
+            );
         }
     }
 }
