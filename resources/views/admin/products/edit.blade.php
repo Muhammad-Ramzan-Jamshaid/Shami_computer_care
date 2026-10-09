@@ -35,16 +35,8 @@
                     <label for="category_id" style="font-weight: 600; display: block; margin-bottom: 8px; font-size: 0.9rem;">Product Category</label>
                     <select name="category_id" id="category_id" class="form-control" required style="width: 100%; height: 42px; padding: 0 15px;">
                         <option value="">Select Category</option>
-                        @foreach($categories as $parent)
-                            @if($parent->children->isNotEmpty())
-                                <optgroup label="{{ $parent->name }}">
-                                    @foreach($parent->children as $child)
-                                        <option value="{{ $child->id }}" {{ old('category_id', $product->category_id) == $child->id ? 'selected' : '' }}>{{ $child->name }}</option>
-                                    @endforeach
-                                </optgroup>
-                            @else
-                                <option value="{{ $parent->id }}" {{ old('category_id', $product->category_id) == $parent->id ? 'selected' : '' }}>{{ $parent->name }}</option>
-                            @endif
+                        @foreach($categoriesList as $cat)
+                            <option value="{{ $cat['id'] }}" {{ old('category_id', $product->category_id) == $cat['id'] ? 'selected' : '' }}>{{ $cat['name'] }}</option>
                         @endforeach
                     </select>
                     @error('category_id')

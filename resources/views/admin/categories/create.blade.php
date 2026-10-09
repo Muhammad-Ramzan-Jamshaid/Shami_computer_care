@@ -35,7 +35,7 @@
                 <select name="parent_id" id="parent_id" class="form-control" style="width: 100%; height: 42px; padding: 0 15px;">
                     <option value="">None (Create as Root Category)</option>
                     @foreach($parentCategories as $parent)
-                        <option value="{{ $parent->id }}" {{ old('parent_id') == $parent->id ? 'selected' : '' }}>{{ $parent->name }}</option>
+                        <option value="{{ $parent['id'] }}" {{ old('parent_id') == $parent['id'] ? 'selected' : '' }}>{{ $parent['name'] }}</option>
                     @endforeach
                 </select>
                 @error('parent_id')

@@ -217,9 +217,18 @@
                                     All {{ $cat->name }}
                                 </a>
                                 @foreach($cat->children as $child)
-                                    <a href="{{ route('shop.category', $child->slug) }}" class="shop-sub-cat-link {{ $currentCategory && $currentCategory->id == $child->id ? 'active' : '' }}">
-                                        • {{ $child->name }}
-                                    </a>
+                                    <div style="padding-left: 2px;">
+                                        <a href="{{ route('shop.category', $child->slug) }}" class="shop-sub-cat-link {{ $currentCategory && $currentCategory->id == $child->id ? 'active' : '' }}" style="font-weight: 600; color: var(--secondary-color);">
+                                            • {{ $child->name }}
+                                        </a>
+                                        @if($child->children->isNotEmpty())
+                                            @foreach($child->children as $subChild)
+                                                <a href="{{ route('shop.category', $subChild->slug) }}" class="shop-sub-cat-link {{ $currentCategory && $currentCategory->id == $subChild->id ? 'active' : '' }}" style="padding-left: 52px; font-size: 0.78rem; color: var(--text-muted);">
+                                                    └─ {{ $subChild->name }}
+                                                </a>
+                                            @endforeach
+                                        @endif
+                                    </div>
                                 @endforeach
                             </div>
                         @endif

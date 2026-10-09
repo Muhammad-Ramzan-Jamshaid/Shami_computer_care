@@ -9,11 +9,16 @@ class Category extends Model
 {
     protected $fillable = ['name', 'slug', 'parent_id'];
 
-    // Auto-generate slug on creation
+    // Auto-generate slug on creation & update
     protected static function boot()
     {
         parent::boot();
         static::creating(function ($category) {
+            if (empty($category->slug)) {
+                $category->slug = Str::slug($category->name);
+            }
+        });
+        static::updating(function ($category) {
             if (empty($category->slug)) {
                 $category->slug = Str::slug($category->name);
             }
@@ -43,5 +48,35 @@ class Category extends Model
             $ids = array_merge($ids, $child->descendantIds());
         }
         return $ids;
+    }
+
+    // Static helper to return all categories in hierarchical indented order
+    public static function getHierarchicalList($excludeId = null)
+    {
+        $rootCategories = self::whereNull('parent_id')->with('children')->get();
+        $result = collect();
+
+        $traverse = function ($category, $prefix = '') use (&$traverse, &$result, $excludeId) {
+            if ($excludeId && $category->id == $excludeId) {
+                return;
+            }
+
+            $result->push([
+                'id' => $category->id,
+                'name' => $prefix . $category->name,
+                'raw_name' => $category->name,
+                'level' => strlen($prefix) / 3
+            ]);
+
+            foreach ($category->children as $child) {
+                $traverse($child, $prefix . '--- ');
+            }
+        };
+
+        foreach ($rootCategories as $root) {
+            $traverse($root, '');
+        }
+
+        return $result;
     }
 }

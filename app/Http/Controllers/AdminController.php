@@ -35,9 +35,8 @@ class AdminController extends Controller
 
     public function create()
     {
-        // Get categories with their subcategories to show a hierarchical select list
-        $categories = Category::whereNull('parent_id')->with('children')->get();
-        return view('admin.products.create', compact('categories'));
+        $categoriesList = Category::getHierarchicalList();
+        return view('admin.products.create', compact('categoriesList'));
     }
 
     public function store(Request $request)
@@ -78,8 +77,8 @@ class AdminController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::whereNull('parent_id')->with('children')->get();
-        return view('admin.products.edit', compact('product', 'categories'));
+        $categoriesList = Category::getHierarchicalList();
+        return view('admin.products.edit', compact('product', 'categoriesList'));
     }
 
     public function update(Request $request, $id)
@@ -148,7 +147,7 @@ class AdminController extends Controller
 
     public function categoriesCreate()
     {
-        $parentCategories = Category::whereNull('parent_id')->get();
+        $parentCategories = Category::getHierarchicalList();
         return view('admin.categories.create', compact('parentCategories'));
     }
 
@@ -170,7 +169,7 @@ class AdminController extends Controller
     public function categoriesEdit($id)
     {
         $category = Category::findOrFail($id);
-        $parentCategories = Category::whereNull('parent_id')->where('id', '!=', $category->id)->get();
+        $parentCategories = Category::getHierarchicalList($category->id);
         return view('admin.categories.edit', compact('category', 'parentCategories'));
     }
 

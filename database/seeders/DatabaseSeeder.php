@@ -26,15 +26,37 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Seed Categories Structure
+        // 2. Seed Multi-Level Nested Categories Structure
         $structure = [
-            'Laptops' => ['Dell Laptops', 'HP Laptops', 'Lenovo Laptops', 'ASUS Laptops', 'Apple MacBooks'],
-            'Cables' => ['HDMI Cables', 'Ethernet Cables', 'Power Cables', 'VGA Cables'],
+            'Laptops' => [
+                'Dell Laptops' => ['Core i5 Dell Laptops', 'Core i7 Dell Laptops'],
+                'HP Laptops' => ['Core i5 HP Laptops', 'Core i7 HP Laptops'],
+                'Lenovo Laptops' => [],
+                'ASUS Laptops' => [],
+                'Apple MacBooks' => []
+            ],
+            'Cables' => [
+                'HDMI Cables' => ['Original 4K Braided HDMI Cables', 'Standard HDMI Cables'],
+                'Ethernet Cables' => ['CAT6 Copper Ethernet Cables', 'CAT5e Cables'],
+                'Power Cables' => [],
+                'VGA Cables' => []
+            ],
             'Laptop Chargers' => [],
-            'Storage Devices' => ['Solid State Drives (SSDs)', 'Hard Disk Drives (HDDs)'],
-            'USBs' => ['Kingston USBs', 'SanDisk USBs', 'Samsung USBs', 'HP USBs'],
+            'Storage Devices' => [
+                'Solid State Drives (SSDs)' => ['NVMe M.2 SSDs', 'SATA SSDs'],
+                'Hard Disk Drives (HDDs)' => ['Surveillance HDDs', 'Desktop HDDs']
+            ],
+            'USBs' => [
+                'Kingston USBs' => ['Original Kingston USBs', 'Copy / A-Grade Kingston USBs'],
+                'SanDisk USBs' => ['Original SanDisk USBs', 'Copy SanDisk USBs'],
+                'Samsung USBs' => [],
+                'HP USBs' => []
+            ],
             'Speakers' => [],
-            'Converters' => ['VGA to HDMI Converters', 'HDMI to VGA Converters'],
+            'Converters' => [
+                'VGA to HDMI Converters' => [],
+                'HDMI to VGA Converters' => []
+            ],
             'Keyboards' => [],
             'Mice' => [],
             'Headphones' => []
@@ -49,78 +71,80 @@ class DatabaseSeeder extends Seeder
             );
             $categoryMap[$parentName] = $parent;
 
-            foreach ($children as $childName) {
-                $child = Category::updateOrCreate(
-                    ['slug' => Str::slug($childName)],
-                    ['name' => $childName, 'parent_id' => $parent->id]
-                );
-                $categoryMap[$childName] = $child;
+            foreach ($children as $childName => $subChildren) {
+                if (is_array($subChildren)) {
+                    $child = Category::updateOrCreate(
+                        ['slug' => Str::slug($childName)],
+                        ['name' => $childName, 'parent_id' => $parent->id]
+                    );
+                    $categoryMap[$childName] = $child;
+
+                    foreach ($subChildren as $subChildName) {
+                        $subChild = Category::updateOrCreate(
+                            ['slug' => Str::slug($subChildName)],
+                            ['name' => $subChildName, 'parent_id' => $child->id]
+                        );
+                        $categoryMap[$subChildName] = $subChild;
+                    }
+                } else {
+                    $child = Category::updateOrCreate(
+                        ['slug' => Str::slug($subChildren)],
+                        ['name' => $subChildren, 'parent_id' => $parent->id]
+                    );
+                    $categoryMap[$subChildren] = $child;
+                }
             }
         }
 
         // 3. Seed Sample Products
         $products = [
             [
-                'category' => 'Dell Laptops',
-                'name' => 'Dell Latitude 5420 Core i5',
-                'description' => 'Business class lightweight laptop. Powered by Intel Core i5 11th Gen, 16GB RAM, and 512GB NVMe SSD. Features a crystal clear 14" Full HD screen and excellent keyboard travel.',
-                'price' => 135000,
-                'image_path' => null
-            ],
-            [
-                'category' => 'HP Laptops',
-                'name' => 'HP EliteBook 840 G8 Core i7',
-                'description' => 'Premium aluminum business notebook. Intel Core i7 11th Gen, 16GB DDR4 RAM, 1TB NVMe high-speed SSD, Backlit keyboard, and Fingerprint security. Sleek and durable.',
-                'price' => 165000,
-                'image_path' => null
-            ],
-            [
-                'category' => 'Lenovo Laptops',
-                'name' => 'Lenovo ThinkPad L14 Core i5',
-                'description' => 'Legendary reliability. Intel Core i5 10th Gen, 8GB RAM, 256GB SSD, spill-resistant keyboard, and long-lasting battery life. Ideal for students and office workers.',
-                'price' => 108000,
-                'image_path' => null
-            ],
-            [
-                'category' => 'Apple MacBooks',
-                'name' => 'MacBook Pro M2 Space Gray',
-                'description' => 'Supercharged by Apple M2 chip. Features an 8-core CPU, 10-core GPU, 8GB unified memory, and 512GB super-fast SSD storage. Liquid Retina display and up to 20 hours battery life.',
-                'price' => 320000,
-                'image_path' => null
-            ],
-            [
-                'category' => 'HDMI Cables',
-                'name' => 'Premium Gold-Plated HDMI 4K Cable',
-                'description' => 'Ultra high-speed 5m HDMI cable supporting true 4K resolution at 60Hz. Heavy duty braided nylon sleeve protects signal loss and enhances stability.',
+                'category' => 'Original Kingston USBs',
+                'name' => 'Original Kingston DataTraveler Exodia 64GB USB 3.2',
+                'description' => '100% Genuine Original Kingston USB flash drive with official distributor warranty card. High-speed USB 3.2 read/write performance.',
                 'price' => 2200,
                 'image_path' => null
             ],
             [
-                'category' => 'Ethernet Cables',
-                'name' => 'CAT6 High-Speed RJ45 Network Cable Box',
-                'description' => 'Full roll of 305 meters high-speed copper CAT6 Ethernet cable. Excellent bandwidth capability up to 250 MHz for commercial networking projects.',
+                'category' => 'Copy / A-Grade Kingston USBs',
+                'name' => 'Kingston 64GB USB 3.0 (A-Grade Market Copy)',
+                'description' => 'A-Grade copy flash drive for budget storage needs. Suitable for everyday document files, media storage, and student use.',
+                'price' => 1250,
+                'image_path' => null
+            ],
+            [
+                'category' => 'Original 4K Braided HDMI Cables',
+                'name' => 'Original Baseus 4K 60Hz Gold-Plated Braided HDMI 5m',
+                'description' => 'Heavy duty braided nylon 5-meter HDMI cable supporting uncompressed 4K@60Hz video and high-end Dolby audio.',
+                'price' => 2800,
+                'image_path' => null
+            ],
+            [
+                'category' => 'Standard HDMI Cables',
+                'name' => 'Standard Black PVC HDMI Cable 1.5m',
+                'description' => 'Standard Full HD 1080p male-to-male HDMI cable for desktop monitors, TV boxes, and projectors.',
+                'price' => 450,
+                'image_path' => null
+            ],
+            [
+                'category' => 'Core i5 Dell Laptops',
+                'name' => 'Dell Latitude 5420 Core i5 11th Gen',
+                'description' => 'Business class lightweight laptop. Intel Core i5 11th Gen, 16GB RAM, 512GB NVMe SSD, 14" Full HD display, excellent battery health.',
+                'price' => 135000,
+                'image_path' => null
+            ],
+            [
+                'category' => 'Core i7 HP Laptops',
+                'name' => 'HP EliteBook 840 G8 Core i7 11th Gen',
+                'description' => 'Premium aluminum business notebook. Intel Core i7 11th Gen, 16GB DDR4 RAM, 1TB NVMe SSD, Backlit keyboard, Fingerprint sensor.',
+                'price' => 165000,
+                'image_path' => null
+            ],
+            [
+                'category' => 'CAT6 Copper Ethernet Cables',
+                'name' => 'CAT6 High-Speed Copper Ethernet Cable Roll (305m)',
+                'description' => 'Full roll of 305 meters pure copper CAT6 networking cable for CCTV installations and gigabit commercial networking.',
                 'price' => 18500,
-                'image_path' => null
-            ],
-            [
-                'category' => 'Kingston USBs',
-                'name' => 'Kingston DataTraveler Exodia 64GB',
-                'description' => 'High speed USB 3.2 Gen 1 flash drive. Features quick read/write speeds, protective loop cap, and robust build quality. Essential storage companion.',
-                'price' => 1600,
-                'image_path' => null
-            ],
-            [
-                'category' => 'Speakers',
-                'name' => '2.1 Multimedia Speaker System with Woofer',
-                'description' => 'Powerful computer audio speaker set featuring a heavy bass subwoofer. Bluetooth enabled, USB/SD card input, and remote controller. 40W RMS total power output.',
-                'price' => 4500,
-                'image_path' => null
-            ],
-            [
-                'category' => 'VGA to HDMI Converters',
-                'name' => 'VGA to HDMI Converter Adapter with Audio',
-                'description' => 'Converts old computer analog VGA output to digital HDMI input on modern screens. Includes dedicated 3.5mm AUX audio transmission line.',
-                'price' => 1200,
                 'image_path' => null
             ]
         ];
@@ -165,14 +189,6 @@ class DatabaseSeeder extends Seeder
                 'client' => 'Al-Rehman Business Tower',
                 'description' => 'Designed and deployed high-performance dual-band Wi-Fi access points, fiber optic backbone connectivity, and organized server rack assembly.',
                 'details' => 'Includes cable management, patch panel termination, Mikrotik router routing, VLAN setup, and network bandwidth optimization.',
-                'image_path' => null
-            ],
-            [
-                'title' => 'Bank Branch Security & Biometric Access Control',
-                'category' => 'Access Control & CCTV',
-                'client' => 'Farooqabad Commercial Bank',
-                'description' => 'Integrated biometric attendance & door access control system, motion sensors, panic alarm system, and 24/7 CCTV surveillance coverage.',
-                'details' => 'Custom installation adhering to strict financial institution security regulations, emergency battery backups, and encrypted cloud event recording.',
                 'image_path' => null
             ]
         ];
